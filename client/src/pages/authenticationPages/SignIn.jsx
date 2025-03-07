@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const SignInPage = () => {
     const [formData, setFormData] = useState({
@@ -26,6 +27,8 @@ const SignInPage = () => {
 
             if (response.ok) {
                 navigate('/home', { state: { user: data.user } });
+                const user=data.user;
+                Cookies.set('user', JSON.stringify(user), { expires: 7 });
             } else {
                 // Login failed: show an error message
                 alert(data.message || 'Login failed!');

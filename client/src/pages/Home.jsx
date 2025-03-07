@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import UploadMediaForm from '../components/UploadMediaForm'; // Adjust the path if needed
+import Cookies from 'js-cookie';
 
 const Home = () => {
-    const location = useLocation();
-    const user = location.state?.user || { name: 'User Name' };
+    const navigate = useNavigate();
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [users, setUsers] = useState([]);
     const [uploadFormOpen, setUploadFormOpen] = useState(false);
 
+    const handleLogout = () => {
+        Cookies.remove('user'); // Clear user session
+        navigate('/'); // Redirect to landing page
+    };
     // Helper to capitalize each word in a string
     const capitalizeWords = (str) =>
         str
@@ -72,11 +77,14 @@ const Home = () => {
                 <nav className="flex-1 mt-4">
                     <ul>
                         {['Dashboard', 'Profile', 'Messages', 'Settings', 'Logout'].map((item, index) => (
-                            <li
-                                key={index}
-                                className="px-4 py-2 hover:bg-purple-700 transition cursor-pointer"
-                            >
-                                {sidebarOpen ? item : item.charAt(0)}
+                            <li key={index} className="px-4 py-2 hover:bg-purple-700 transition cursor-pointer">
+                                {item === 'Logout' ? (
+                                    <button onClick={handleLogout} className="w-full text-left focus:outline-none">
+                                        {sidebarOpen ? item : item.charAt(0)}
+                                    </button>
+                                ) : (
+                                    sidebarOpen ? item : item.charAt(0)
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -169,16 +177,11 @@ const Home = () => {
                         {users.map((userItem) => (
                             <div
                                 key={userItem._id}
-                                className="bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition duration-300"
+                                className="bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition duration-300 cursor-pointer"
+                                onClick={() => navigate(`/user-media/${userItem._id}`)}
                             >
-                                <img
-                                    src="/user.png"
-                                    alt={userItem.name}
-                                    className="w-16 h-16 rounded-full mx-auto"
-                                />
-                                <h3 className="text-center mt-4 font-semibold text-gray-800">
-                                    {userItem.name}
-                                </h3>
+                                <img src="/user.png" alt={userItem.name} className="w-16 h-16 rounded-full mx-auto" />
+                                <h3 className="text-center mt-4 font-semibold text-gray-800">{userItem.name}</h3>
                             </div>
                         ))}
                     </div>
