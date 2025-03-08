@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const mediaSchema = new mongoose.Schema(
     {
         fileUrl: { type: String, required: true },
-        screenshotEnabled: { type: Boolean, default: false },
         downloadEnabled: { type: Boolean, default: false },
         viewOnceEnabled: { type: Boolean, default: false },
         viewed : {type:Boolean, default :false},

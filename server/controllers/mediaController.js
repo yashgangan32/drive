@@ -6,12 +6,11 @@ export const uploadMedia = async (req, res) => {
             return res.status(400).json({ success: false, message: 'No file uploaded' });
         }
 
-        const { screenshotEnabled, downloadEnabled, viewOnceEnabled,uploadedBy, fileName } = req.body;
+        const {downloadEnabled, viewOnceEnabled,uploadedBy, fileName } = req.body;
 
         // Create a new Media document using the Cloudinary URL from req.file.path
         const media = new Media({
             fileUrl: req.file.path,
-            screenshotEnabled: screenshotEnabled === 'true',
             downloadEnabled: downloadEnabled === 'true',
             viewOnceEnabled: viewOnceEnabled ==='true',
             fileName: fileName || req.file.originalname,
@@ -46,5 +45,24 @@ export const getMediaByUser = async (req, res) => {
     } catch (error) {
         console.error('Error fetching media by user:', error);
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
+export const markMediaAsViewed = async (req, res) => {
+    try {
+        const { mediaId } = req.params;
+        const { viewed } = req.body;
+        const media = await Media.findByIdAndUpdate(
+            mediaId,
+            { viewed },
+            { new: true }
+        );
+        if (!media) {
+            return res.status(404).json({ message: 'Media not found' });
+        }
+        res.status(200).json({ message: 'Media marked as viewed', media });
+    } catch (error) {
+        console.error('Error updating media:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };

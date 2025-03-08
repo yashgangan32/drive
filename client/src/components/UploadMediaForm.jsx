@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 const UploadMediaForm = ({ userId, onClose, onSubmit: externalOnSubmit }) => {
     const [file, setFile] = useState(null);
-    const [screenshotEnabled, setScreenshotEnabled] = useState(false);
     const [downloadEnabled, setDownloadEnabled] = useState(false);
     const [viewOnceEnabled, setViewOnceEnabled] = useState(false);
     const [fileName, setFileName] = useState('No file chosen');
@@ -28,7 +27,6 @@ const UploadMediaForm = ({ userId, onClose, onSubmit: externalOnSubmit }) => {
 
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('screenshotEnabled', screenshotEnabled);
         formData.append('downloadEnabled', downloadEnabled);
         formData.append('viewOnceEnabled', viewOnceEnabled);
         formData.append('fileName', fileName);
@@ -46,7 +44,6 @@ const UploadMediaForm = ({ userId, onClose, onSubmit: externalOnSubmit }) => {
                 // Clear form fields after successful upload:
                 setFile(null);
                 setFileName('No file chosen');
-                setScreenshotEnabled(false);
                 setDownloadEnabled(false);
                 setViewOnceEnabled(false);
                 if (externalOnSubmit) externalOnSubmit(data);
@@ -87,18 +84,6 @@ const UploadMediaForm = ({ userId, onClose, onSubmit: externalOnSubmit }) => {
                                 onChange={handleFileChange}
                             />
                         </div>
-                    </div>
-                    <div className="mb-4 flex items-center">
-                        <input
-                            type="checkbox"
-                            id="screenshot"
-                            checked={screenshotEnabled}
-                            onChange={(e) => setScreenshotEnabled(e.target.checked)}
-                            className="mr-2"
-                        />
-                        <label htmlFor="screenshot" className="text-gray-700">
-                            Enable Screenshot
-                        </label>
                     </div>
                     <div className="mb-4 flex items-center">
                         <input

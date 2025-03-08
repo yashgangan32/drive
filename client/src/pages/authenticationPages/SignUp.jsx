@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link } from "react-router-dom";
 const SignUpPage = () => {
     const navigate = useNavigate(); // Hook for navigation
     const [formData, setFormData] = useState({
@@ -100,6 +100,12 @@ const SignUpPage = () => {
                     >
                         Sign Up
                     </button>
+                    <p className="mt-4 text-center text-gray-600">
+                        Already have an account?{" "}
+                        <Link to="/signin" className="text-purple-600 hover:underline">
+                            Sign In
+                        </Link>
+                    </p>
                 </form>
             </div>
         </div>

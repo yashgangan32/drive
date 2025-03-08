@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { saveAs } from 'file-saver';
 
 const UserMedia = () => {
     const { userId } = useParams();
@@ -7,6 +8,16 @@ const UserMedia = () => {
     const [mediaItems, setMediaItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMedia, setSelectedMedia] = useState(null);
+
+    const handleDownload = async () => {
+        try {
+            const response = await fetch(`${selectedMedia.fileUrl}?fl_attachment=true`);
+            const blob = await response.blob();
+            saveAs(blob, selectedMedia.fileName || 'download');
+        } catch (error) {
+            console.error('Download error:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchMedia = async () => {
@@ -28,17 +39,51 @@ const UserMedia = () => {
                 setLoading(false);
             }
         };
-
         fetchMedia();
     }, [userId]);
 
-    const handleMediaClick = (media) => {
+    const filteredMedia = mediaItems.filter(
+        (media) => !(media.viewOnceEnabled && media.viewed)
+    );
+
+    const handleMediaClick = async (media) => {
+        if (media.viewOnceEnabled && !media.viewed) {
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_BACKEND_URL}/api/media/${media._id}/viewed`,
+                    {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ viewed: true }),
+                    }
+                );
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('Media marked as viewed:', data);
+                    media.viewed = true;
+                } else {
+                    console.error('Failed to update viewed status:', data.message);
+                }
+            } catch (error) {
+                console.error('Error updating viewed status:', error);
+            }
+        }
         setSelectedMedia(media);
     };
 
     const handleCloseModal = () => {
         setSelectedMedia(null);
     };
+
+    // Auto-close modal if viewOnceEnabled is true
+    useEffect(() => {
+        if (selectedMedia && selectedMedia.viewOnceEnabled) {
+            const timer = setTimeout(() => {
+                handleCloseModal();
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [selectedMedia]);
 
     return (
         <div className="p-6">
@@ -54,22 +99,21 @@ const UserMedia = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : mediaItems.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {mediaItems.map((media) => (
-                        <div
-                            key={media._id}
-                            className="bg-white rounded-lg shadow-lg p-4 cursor-pointer transform hover:scale-105 transition duration-300"
-                            onClick={() => handleMediaClick(media)}
-                        >
-                            <img
-                                src={media.fileUrl}
-                                alt={media.fileName}
-                                className="w-full h-48 object-cover rounded"
-                            />
-                            <p className="mt-2 text-gray-800 text-center">{media.fileName}</p>
-                        </div>
-                    ))}
-                </div>
+                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-6">
+                        {filteredMedia.map((media) => (
+                            <div
+                                key={media._id}
+                                className="bg-white rounded-lg shadow-lg p-4 cursor-pointer transform hover:scale-105 transition duration-300"
+                                onClick={() => handleMediaClick(media)}
+                            >
+                                <img
+                                    src={media.fileUrl}
+                                    alt={media.fileName}
+                                    className={`w-full h-48 object-cover rounded ${media.viewOnceEnabled ? 'filter blur-2xl' : ''}`}
+                                />
+                            </div>
+                        ))}
+                    </div>
             ) : (
                 <p>No media found for this user.</p>
             )}
@@ -84,19 +128,35 @@ const UserMedia = () => {
                     ></div>
                     {/* Modal Content */}
                     <div className="relative bg-white rounded-lg shadow-xl p-6 z-50 w-full max-w-3xl mx-4">
-                        <img
-                            src={selectedMedia.fileUrl}
-                            alt={selectedMedia.fileName}
-                            className="w-full h-auto object-contain rounded"
-                        />
+                        {selectedMedia.fileUrl.match(/\.(mp4|mov)$/i) ? (
+                            <video
+                                src={selectedMedia.fileUrl}
+                                controls
+                                className="w-full h-auto object-contain rounded"
+                            />
+                        ) : (
+                            <img
+                                src={selectedMedia.fileUrl}
+                                alt={selectedMedia.fileName}
+                                className="w-full h-auto object-contain rounded"
+                            />
+                        )}
                         <p className="mt-4 text-gray-800 text-center">{selectedMedia.fileName}</p>
-                        <div className="flex justify-center mt-4">
+                        <div className="flex justify-center mt-4 space-x-4">
                             <button
                                 onClick={handleCloseModal}
                                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded"
                             >
                                 Back to User Media
                             </button>
+                            {selectedMedia.downloadEnabled && (
+                                <button
+                                    onClick={handleDownload}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                                >
+                                    Download Media
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

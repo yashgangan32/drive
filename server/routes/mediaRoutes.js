@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from '../config/cloudinary.js';
-import { uploadMedia, getMediaByUser } from '../controllers/mediaController.js';
+import { uploadMedia, getMediaByUser, markMediaAsViewed } from '../controllers/mediaController.js';
 
 const storage = new CloudinaryStorage({
     cloudinary,
@@ -21,5 +21,6 @@ router.post('/upload', upload.single('file'), uploadMedia);
 
 // Endpoint to fetch media by user (pass user id as query parameter)
 router.get('/mediaByUser', getMediaByUser);
+router.patch('/:mediaId/viewed', markMediaAsViewed);
 
 export default router;
