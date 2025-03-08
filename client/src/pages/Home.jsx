@@ -52,11 +52,17 @@ const Home = () => {
         setUploadFormOpen(false);
     };
 
+    // Updated function: close sidebar and navigate to uploaded media page
+    const handleUploadedMedia = () => {
+        setSidebarOpen(false);
+        navigate(`/user-media-uploaded/${user._id}`);
+    };
+
     return (
         <div className="flex h-screen bg-gray-100">
             {/* Desktop Sidebar */}
             <aside
-                className={`bg-purple-800 text-white transition-all duration-300 hidden md:flex flex-col overflow-hidden ${sidebarOpen ? 'w-64' : 'w-20'
+                className={`bg-purple-100 text-white transition-all duration-300 hidden md:flex flex-col overflow-hidden ${sidebarOpen ? 'w-64' : 'w-20'
                     }`}
             >
                 <div className="p-4 flex items-center justify-center border-b border-purple-700">
@@ -104,24 +110,34 @@ const Home = () => {
             )}
             {/* Mobile Sidebar */}
             <aside
-                className={`md:hidden fixed top-0 left-0 w-64 h-full bg-purple-800 text-white p-4 transition-transform duration-500 ease-in-out z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`md:hidden fixed top-0 left-0 w-64 h-full bg-gradient-to-br from-purple-600 to-indigo-800 text-white p-6 shadow-lg transition-transform duration-500 ease-in-out z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
-                        <img className="w-12 h-12 rounded-full" src="/user.png" alt="Profile" />
-                        <span className="ml-4 font-semibold">{capitalizeWords(user.name)}</span>
+                        <img
+                            className="w-12 h-12 rounded-full border-2 border-white"
+                            src="/user.png"
+                            alt="Profile"
+                        />
+                        <span className="ml-4 font-semibold text-lg">{capitalizeWords(user.name)}</span>
                     </div>
-                    <button onClick={toggleSidebar} className="text-white text-xl">
+                    <button onClick={toggleSidebar} className="text-white text-3xl focus:outline-none">
                         &times;
                     </button>
                 </div>
-                <nav className="mt-6">
+                <nav className="space-y-4">
                     <button
-                        className="py-2 px-2 bg-red-600 text-white rounded transition hover:bg-red-700 w-full"
+                        className="w-full py-2 px-4 bg-red-500 hover:bg-red-600 rounded shadow transition-colors duration-200"
                         onClick={handleLogout}
                     >
                         Logout
+                    </button>
+                    <button
+                        className="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded shadow transition-colors duration-200"
+                        onClick={handleUploadedMedia}
+                    >
+                        Uploaded Media
                     </button>
                 </nav>
             </aside>
@@ -193,11 +209,9 @@ const Home = () => {
                 </main>
             </div>
 
-            {/* Upload Media Form Modal with animation */}
+            {/* Upload Media Form Modal */}
             {uploadFormOpen && (
-                
-                        <UploadMediaForm userId={user._id} onClose={handleCloseUploadForm} />
-                   
+                <UploadMediaForm userId={user._id} onClose={handleCloseUploadForm} />
             )}
         </div>
     );

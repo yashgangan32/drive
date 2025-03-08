@@ -9,6 +9,7 @@ const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'media_uploads', // Cloudinary folder name
+        resource_type: 'auto'
     },
 });
 

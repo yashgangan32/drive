@@ -81,6 +81,7 @@ const UploadMediaForm = ({ userId, onClose, onSubmit: externalOnSubmit }) => {
                                 type="file"
                                 id="fileInput"
                                 className="hidden"
+                                accept="image/*,video/*" 
                                 onChange={handleFileChange}
                             />
                         </div>

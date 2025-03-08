@@ -9,6 +9,7 @@ import SignInPage from './pages/authenticationPages/SignIn';
 import Home from './pages/Home';
 import UserMedia from './pages/UserMedia';
 import RequireAuth from './middleware/RequireAuth';
+import UploadedMediaPage from './pages/UploadedMediaPage';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route element={<RequireAuth />}>
           <Route path="/home" element={<Home />} />
           <Route path="/user-media/:userId" element={<UserMedia />} />
+          <Route path="/user-media-uploaded/:userId" element={<UploadedMediaPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
