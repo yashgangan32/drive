@@ -100,19 +100,34 @@ const UserMedia = () => {
                 <p>Loading...</p>
             ) : mediaItems.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-6">
-                        {filteredMedia.map((media) => (
-                            <div
-                                key={media._id}
-                                className="bg-white rounded-lg shadow-lg p-4 cursor-pointer transform hover:scale-105 transition duration-300"
-                                onClick={() => handleMediaClick(media)}
-                            >
-                                <img
-                                    src={media.fileUrl}
-                                    alt={media.fileName}
-                                    className={`w-full aspect-square object-cover rounded ${media.viewOnceEnabled ? 'filter blur-2xl' : ''}`}
-                                />
-                            </div>
-                        ))}
+                        {filteredMedia.map((media) => {
+                            const isVideo = media.fileUrl.match(/\.(mp4|mov)$/i);
+                            return (
+                                <div
+                                    key={media._id}
+                                    className="bg-white rounded-lg shadow-lg p-4 cursor-pointer transform hover:scale-105 transition duration-300"
+                                    onClick={() => handleMediaClick(media)}
+                                >
+                                    {isVideo ? (
+                                        <>
+                                            <video
+                                                src={media.fileUrl}
+                                                className="w-full aspect-square object-cover rounded"
+                                                preload="metadata"
+                                                muted
+                                            />
+                                            <p className="text-center mt-2">video</p>
+                                        </>
+                                    ) : (
+                                        <img
+                                            src={media.fileUrl}
+                                            alt={media.fileName}
+                                            className={`w-full aspect-square object-cover rounded ${media.viewOnceEnabled ? 'filter blur-2xl' : ''}`}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
             ) : (
                 <p>This User Have Not Uploaded Anything Yet.</p>
