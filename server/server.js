@@ -8,6 +8,8 @@ import routes from './routes/routes.js';  // Import all routes
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // Middlewares
 app.use(cors({
     origin: process.env.FRONTEND_URL,
