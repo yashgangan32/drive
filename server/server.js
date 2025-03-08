@@ -9,13 +9,9 @@ import routes from './routes/routes.js';  // Import all routes
 const app = express();
 
 // Middlewares
-app.use(express.json());
-const corsOptions = {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: 'https://drive-frontend-nine.vercel.app'
+}));
 
 // Connect to MongoDB
 connectDB();
