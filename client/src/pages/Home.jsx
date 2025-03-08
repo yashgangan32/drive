@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UploadMediaForm from '../components/UploadMediaForm'; // Adjust the path if needed
+import UploadMediaForm from '../components/UploadMediaForm';
 import Cookies from 'js-cookie';
 
 const Home = () => {
@@ -11,15 +11,13 @@ const Home = () => {
     const [uploadFormOpen, setUploadFormOpen] = useState(false);
 
     const handleLogout = () => {
-        Cookies.remove('user'); // Clear user session
-        navigate('/'); // Redirect to landing page
+        Cookies.remove('user');
+        navigate('/');
     };
+
     // Helper to capitalize each word in a string
     const capitalizeWords = (str) =>
-        str
-            .split(' ')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+        str.split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -31,10 +29,7 @@ const Home = () => {
             try {
                 const response = await fetch(
                     `${import.meta.env.VITE_BACKEND_URL}/api/list/userlist?userId=${user._id}`,
-                    {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    }
+                    { method: 'GET', headers: { 'Content-Type': 'application/json' } }
                 );
                 const data = await response.json();
                 if (response.ok) {
@@ -57,40 +52,39 @@ const Home = () => {
         setUploadFormOpen(false);
     };
 
-
     return (
         <div className="flex h-screen bg-gray-100">
             {/* Desktop Sidebar */}
             <aside
-                className={`bg-purple-800 text-white transition-all duration-300 hidden md:flex flex-col ${sidebarOpen ? 'w-64' : 'w-20'
+                className={`bg-purple-800 text-white transition-all duration-300 hidden md:flex flex-col overflow-hidden ${sidebarOpen ? 'w-64' : 'w-20'
                     }`}
             >
-                {/* Profile Section */}
                 <div className="p-4 flex items-center justify-center border-b border-purple-700">
                     <img className="w-12 h-12 rounded-full" src="/user.png" alt="Profile" />
                     {sidebarOpen && (
                         <span className="ml-4 font-semibold">{capitalizeWords(user.name)}</span>
                     )}
                 </div>
-
-                {/* Navigation List */}
                 <nav className="flex-1 mt-4">
                     <ul>
-                        {['Dashboard', 'Profile', 'Messages', 'Settings', 'Logout'].map((item, index) => (
-                            <li key={index} className="px-4 py-2 hover:bg-purple-700 transition cursor-pointer">
-                                {item === 'Logout' ? (
-                                    <button onClick={handleLogout} className="w-full text-left focus:outline-none">
-                                        {sidebarOpen ? item : item.charAt(0)}
-                                    </button>
-                                ) : (
-                                    sidebarOpen ? item : item.charAt(0)
-                                )}
-                            </li>
-                        ))}
+                        {['Dashboard', 'Profile', 'Messages', 'Settings', 'Logout'].map(
+                            (item, index) => (
+                                <li key={index} className="px-4 py-2 hover:bg-purple-700 transition cursor-pointer">
+                                    {item === 'Logout' ? (
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left focus:outline-none"
+                                        >
+                                            {sidebarOpen ? item : item.charAt(0)}
+                                        </button>
+                                    ) : (
+                                        sidebarOpen ? item : item.charAt(0)
+                                    )}
+                                </li>
+                            )
+                        )}
                     </ul>
                 </nav>
-
-                {/* Sidebar Toggle */}
                 <div className="p-4 border-t border-purple-700">
                     <button
                         onClick={toggleSidebar}
@@ -104,12 +98,13 @@ const Home = () => {
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+                    className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-500 ease-in-out"
                     onClick={toggleSidebar}
                 ></div>
             )}
+            {/* Mobile Sidebar */}
             <aside
-                className={`md:hidden fixed top-0 left-0 w-64 h-full bg-purple-800 text-white p-4 transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`md:hidden fixed top-0 left-0 w-64 h-full bg-purple-800 text-white p-4 transition-transform duration-500 ease-in-out z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 <div className="flex items-center justify-between">
@@ -122,16 +117,12 @@ const Home = () => {
                     </button>
                 </div>
                 <nav className="mt-6">
-                    <ul>
-                        {['Dashboard', 'Profile', 'Messages', 'Settings', 'Logout'].map((item, index) => (
-                            <li
-                                key={index}
-                                className="py-2 px-2 hover:bg-purple-700 rounded transition cursor-pointer"
-                            >
-                                {item}
-                            </li>
-                        ))}
-                    </ul>
+                    <button
+                        className="py-2 px-2 bg-red-600 text-white rounded transition hover:bg-red-700 w-full"
+                        onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
                 </nav>
             </aside>
 
@@ -140,7 +131,10 @@ const Home = () => {
                 {/* Header */}
                 <header className="bg-white shadow p-4 flex items-center justify-between md:justify-start">
                     {/* Mobile Sidebar Toggle */}
-                    <button onClick={toggleSidebar} className="md:hidden mr-4">
+                    <button
+                        onClick={toggleSidebar}
+                        className="md:hidden mr-4 transform transition duration-300 hover:rotate-90"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-8 w-8 text-purple-700"
@@ -156,19 +150,28 @@ const Home = () => {
                             />
                         </svg>
                     </button>
-                    <h1 className="text-3xl font-extrabold">
-                        <span className="text-gray-800">Hello</span>
-                        <span className="ml-2 text-purple-600">{capitalizeWords(user.name)}</span>
-                    </h1>
+                    <div className="flex flex-col items-start">
+                        <h1 className="text-3xl font-extrabold flex">
+                            <span className="text-gray-800 custom-animate-slideInDown">Hello</span>
+                            <span className="ml-2 text-purple-600 custom-animate-slideInDown custom-delay-200">
+                                {capitalizeWords(user.name)}
+                            </span>
+                        </h1>
+                        <p className="text-sm text-gray-500 custom-animate-fadeInUp custom-delay-200">
+                            Welcome back!
+                        </p>
+                    </div>
                 </header>
 
                 {/* Users List */}
                 <main className="flex-grow p-6 overflow-auto">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-semibold text-gray-700">Users</h2>
+                        <h2 className="text-xl font-semibold text-gray-700 custom-animate-slideInDown custom-delay-200">
+                            Users
+                        </h2>
                         <button
                             onClick={handleUploadMedia}
-                            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-300"
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-300 custom-animate-fadeInUp custom-delay-200"
                         >
                             Upload Media
                         </button>
@@ -177,24 +180,24 @@ const Home = () => {
                         {users.map((userItem) => (
                             <div
                                 key={userItem._id}
-                                className="bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition duration-300 cursor-pointer"
+                                className="bg-white rounded-lg shadow-lg p-4 transform hover:scale-105 transition duration-300 cursor-pointer custom-animate-fadeInUp"
                                 onClick={() => navigate(`/user-media/${userItem._id}`)}
                             >
                                 <img src="/user.png" alt={userItem.name} className="w-16 h-16 rounded-full mx-auto" />
-                                <h3 className="text-center mt-4 font-semibold text-gray-800">{userItem.name}</h3>
+                                <h3 className="text-center mt-4 font-semibold text-gray-800 custom-animate-slideInDown custom-delay-200">
+                                    {userItem.name}
+                                </h3>
                             </div>
                         ))}
                     </div>
                 </main>
             </div>
 
-            {/* Upload Media Form Modal */}
+            {/* Upload Media Form Modal with animation */}
             {uploadFormOpen && (
-                <UploadMediaForm
-                    userId={user._id}
-                    onClose={handleCloseUploadForm}
-                    
-                />
+                
+                        <UploadMediaForm userId={user._id} onClose={handleCloseUploadForm} />
+                   
             )}
         </div>
     );

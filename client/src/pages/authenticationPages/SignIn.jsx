@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const SignInPage = () => {
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -16,33 +14,33 @@ const SignInPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(''); // Clear previous errors
+
         try {
-            // Make a POST request to your login endpoint
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
+
             const data = await response.json();
 
             if (response.ok) {
+                Cookies.set('user', JSON.stringify(data.user), { expires: 7 });
                 navigate('/home', { state: { user: data.user } });
-                const user=data.user;
-                Cookies.set('user', JSON.stringify(user), { expires: 7 });
             } else {
-                // Login failed: show an error message
-                alert(data.message || 'Login failed!');
+                setError(data.message || 'Login failed!');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('Something went wrong!');
+            setError('Something went wrong! Please try again.');
         }
     };
 
     return (
         <div
             className="min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: "url('/authback.png')" }} // Image from public folder
+            style={{ backgroundImage: "url('/authback.png')" }}
         >
             <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md mx-4 animate-slideDown">
                 <h1 className="text-3xl font-bold text-center text-purple-700 mb-6">
@@ -77,6 +75,7 @@ const SignInPage = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-300"
                         />
                     </div>
+                    {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
                     <button
                         type="submit"
                         className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded transition duration-300"

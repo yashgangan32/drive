@@ -99,7 +99,7 @@ const UserMedia = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : mediaItems.length > 0 ? (
-                    <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-6">
                         {filteredMedia.map((media) => (
                             <div
                                 key={media._id}
@@ -109,13 +109,13 @@ const UserMedia = () => {
                                 <img
                                     src={media.fileUrl}
                                     alt={media.fileName}
-                                    className={`w-full h-48 object-cover rounded ${media.viewOnceEnabled ? 'filter blur-2xl' : ''}`}
+                                    className={`w-full aspect-square object-cover rounded ${media.viewOnceEnabled ? 'filter blur-2xl' : ''}`}
                                 />
                             </div>
                         ))}
                     </div>
             ) : (
-                <p>No media found for this user.</p>
+                <p>This User Have Not Uploaded Anything Yet.</p>
             )}
 
             {/* Modal Popup for Media */}

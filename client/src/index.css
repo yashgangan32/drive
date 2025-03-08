@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@keyframes slideInDown {
+
+@keyframes customSlideInDown {
   from {
     opacity: 0;
     transform: translateY(-100px);
@@ -11,7 +12,7 @@
   }
 }
 
-@keyframes fadeInUp {
+@keyframes customFadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -23,15 +24,16 @@
   }
 }
 
-.animate-slideInDown {
-  animation: slideInDown 1s ease-out forwards;
+.custom-animate-slideInDown {
+  animation: customSlideInDown 1s ease-out forwards;
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp 1s ease-out forwards;
+.custom-animate-fadeInUp {
+  animation: customFadeInUp 1s ease-out forwards;
 }
 
-.animate-fadeInUp.delay-200 {
+/* Instead of using the combined selector, define a separate class for the delay */
+.custom-delay-200 {
   animation-delay: 0.2s;
 }
 
