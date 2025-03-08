@@ -10,9 +10,9 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: 'https://drive-frontend-nine.vercel.app'
-}));
-
+    origin: process.env.FRONTEND_URL,
+    credentials: true
+}))
 // Connect to MongoDB
 connectDB();
 
