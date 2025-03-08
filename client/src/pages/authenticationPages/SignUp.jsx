@@ -5,6 +5,7 @@ const SignUpPage = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -14,6 +15,7 @@ const SignUpPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(''); // Clear previous errors
+        setIsLoading(true);
 
         try {
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, {
@@ -32,6 +34,8 @@ const SignUpPage = () => {
         } catch (error) {
             console.error("Error:", error);
             setError("Something went wrong! Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -90,9 +94,20 @@ const SignUpPage = () => {
                     {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
                     <button
                         type="submit"
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded transition duration-300"
+                        disabled={isLoading}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Sign Up
+                        {isLoading ? (
+                            <div className="flex items-center justify-center">
+                                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                                Signing Up...
+                            </div>
+                        ) : (
+                            "Sign Up"
+                        )}
                     </button>
                     <p className="mt-4 text-center text-gray-600">
                         Already have an account?{" "}
