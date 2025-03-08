@@ -12,24 +12,6 @@
             "src": "/(.*)",
             "dest": "/"
         }
-    ],
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "https://drive-eta-six.vercel.app"
-                },
-                {
-                    "key": "Access-Control-Allow-Methods",
-                    "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "X-Requested-With, Content-Type, Accept, Authorization"
-                }
-            ]
-        }
     ]
+    
 }
